@@ -1,0 +1,22 @@
+# Netlify build for Loop (Next.js 16, App Router).
+#
+# Scheduling: Netlify scheduled functions are not used. The scheduler endpoints
+# are called from the Supabase database using pg_cron + pg_net:
+#   - GET /api/cron/tick       every 15 minutes  (campaigns, sends, reminders, AI)
+#   - GET /api/cron/retention  nightly at 03:10  (anonymisation and deletion)
+# See supabase/migrations/0002_cron.sql for the setup and how to store the app
+# URL and CRON_SECRET in private.app_config. Both endpoints require
+# `Authorization: Bearer <CRON_SECRET>`.
+#
+# Environment variables (set in Netlify -> Site configuration -> Environment):
+#   NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY,
+#   NEXT_PUBLIC_APP_URL, CRON_SECRET, RESEND_API_KEY, RESEND_WEBHOOK_SECRET,
+#   TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, WHATSAPP_INVITE_CONTENT_SID (optional),
+#   ANTHROPIC_API_KEY, ANTHROPIC_MODEL (optional), DEFAULT_FROM_DOMAIN (optional)
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
