@@ -18,5 +18,11 @@
   command = "npm run build"
   publish = ".next"
 
+[build.environment]
+  # NEXT_PUBLIC_* values are embedded in the browser bundle by design (the
+  # anon key is safe to expose; row-level security does the protection), so
+  # Netlify's secrets scanner must not fail the build when it finds them.
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,NEXT_PUBLIC_APP_URL,ANTHROPIC_MODEL"
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
